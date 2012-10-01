@@ -3,11 +3,28 @@
 </head>
 
 <body>
+  {{> userBox}}
   {{> hello}}
 </body>
 
+<template name="userBox">
+    <div id="user-box">
+        <img id="avatar"/>
+        <div id="username"></div>
+        <button class="btn btn-mini" id="logout">Logout</button>
+    </div>
+</template>
+
 <template name="hello">
-  <h1>Hello World!</h1>
-  {{greeting}}
-  <input type="button" value="Click" />
+  <h1>DooDoo</h1>
+
+  {{> interestsList}}
+</template>
+
+<template name="interestsList">
+    <ul>
+        {{#each interests}}
+            <li>{{name}}</li>
+        {{/each}}
+    </ul>
 </template>
