@@ -199,6 +199,7 @@ if Meteor.isClient
   Template.interestsList.interests = -> Interests.find()
   Template.differenceInterestsList.interests = -> Session.get 'differentInterests'
   Template.differenceInterestsList.events =
+    'click .create-event': -> Events.fb.create(this.name, didEventCreate)
     'click .add-to-my-interest': (event)->
       learnSkill(@)
   Template.matchInterestsList.interests = -> Session.get 'matchedInterests'
