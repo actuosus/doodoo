@@ -204,6 +204,7 @@ if Meteor.isClient
   Template.interestsList.interests = -> Interests.find()
   Template.differenceInterestsList.interests = -> Session.get 'differentInterests'
   Template.differenceInterestsList.events =
+    'click .create-event': -> Events.fb.create(this.name, didEventCreate)
     'click .add-to-my-interest': (event)->
       learnSkill(@)
     'click .ask-a-question': (event)->
@@ -231,6 +232,10 @@ if Meteor.isClient
 
   Template.matchInterestsList.events =
     'click .create-event': -> Events.fb.create(this.name, didEventCreate)
+
+  Template.userBox.events =
+    'click #logout': ->
+      FB.logout ()-> window.location.reload()
 
 if Meteor.isServer
   graph = "https://graph.facebook.com"
