@@ -33,6 +33,7 @@
         <div class="span3">{{> wannaList}}</div>
         <div class="span3">{{> matchInterestsList}}</div>
         <div class="span3">{{> differenceInterestsList}}</div>
+        <div class="span3">{{> myEventList}}</div>
     </div>
 </template>
 
@@ -89,6 +90,17 @@
         <ul>
             {{#each interests}}
             <li>{{name}}</li>
+            {{/each}}
+        </ul>
+    </div>
+</template>
+
+<template name="myEventList">
+    <div class="" id="event-list">
+        <h2>My events</h2>
+        <ul>
+            {{#each items}}
+            <li><a href="https://www.facebook.com/events/{{id}}/" target="_blank">{{name}}</a></li>
             {{/each}}
         </ul>
     </div>

@@ -42,7 +42,6 @@ if Meteor.isClient
         loginStatus = response
         app.accessToken = loginStatus.authResponse.accessToken
         getInfo()
-        main()
       else
         FB.login (response)->
           if response.authResponse
@@ -50,7 +49,6 @@ if Meteor.isClient
             FB.api '/me', (response)->
               console.log "Good to see you, #{response.name}."
               getInfo()
-              main()
           else
             console.log 'User cancelled login or did not fully authorize.'
         ,{scope: permissions.join ','}
@@ -64,6 +62,7 @@ if Meteor.isClient
           image.src = "http://graph.facebook.com/#{user.id}/picture"
           name = document.getElementById 'username'
           name.innerHTML = user.name
+          main()
         else
           console.error user.error.message
 
@@ -97,8 +96,12 @@ if Meteor.isClient
       }, (res)->
         Events.insert { event_id: res.id, profile_id: currentUser.id }
         cb res if cb
-    getAll: ->
-      Events.find({profile_id: currentUser.id}).fetch()
+    getIds: ->
+      _.map Events.find({
+        profile_id: currentUser.id
+      }).fetch(), (item)-> item.event_id
+    getAll: (cb)-> FB.api '/?ids=' + Events.fb.getIds().join(','), cb
+
 
   parseInterest = (res)->
     if res?.data?.length
@@ -151,8 +154,9 @@ if Meteor.isClient
         $(section).hide()
 
   didEventCreate = (res)->
-    console.log this, res
-    $('#modalEventCreate').modal();
+    Events.fb.getAll (res)->
+      Session.set 'myEvents', _.toArray res
+    $('#modalEventCreate').modal()
 
   main = ->
     console.log 'Main called'
@@ -166,9 +170,14 @@ if Meteor.isClient
       interestDifference()
       interestMatch()
 
+    Events.fb.getAll (res)->
+      Session.set 'myEvents', _.toArray res
+
   Template.interestsList.interests = -> Interests.find()
   Template.differenceInterestsList.interests = -> Session.get 'differentInterests'
   Template.matchInterestsList.interests = -> Session.get 'matchedInterests'
+  Template.myEventList.items = -> Session.get 'myEvents'
+
 
   Template.interestsList.events =
 #    'click #get-interests': -> getLikes(); getInterests()
@@ -176,7 +185,7 @@ if Meteor.isClient
     'click .interest': -> postQuestion(this.name)
 
   Template.matchInterestsList.events =
-    'click .create-event': -> Events.fb.create(this.name, didEventCreate.bind(this))
+    'click .create-event': -> Events.fb.create(this.name, didEventCreate)
 
 if Meteor.isServer
   Meteor.startup ()->
