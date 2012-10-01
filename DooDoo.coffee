@@ -211,6 +211,10 @@ if Meteor.isClient
   Template.matchInterestsList.events =
     'click .create-event': -> Events.fb.create(this.name, didEventCreate)
 
+  Template.userBox.events =
+    'click #logout': ->
+      FB.logout ()-> window.location.reload()
+
 if Meteor.isServer
   graph = "https://graph.facebook.com"
   appSecret = "31aab97e2878f7a4e7c879ea64d63b7e"
