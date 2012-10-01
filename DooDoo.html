@@ -108,14 +108,16 @@
             {{#each interests}}
             <li>
                 {{name}}
-                <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
-                    Action
-                    <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                    <li><a class="ask-a-question" tabindex="-1" href="#">Ask a question</a></li>
-                    <li><a class="add-to-my-interest" tabindex="-1" href="#">Add skill</a></li>
-                </ul>
+                <div class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                        Action
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        <li><a class="ask-a-question" tabindex="-1" href="#">Ask a question</a></li>
+                        <li><a class="add-to-my-interest" tabindex="-1" href="#">Add skill</a></li>
+                    </ul>
+                </div>
             </li>
             {{/each}}
         </ul>
