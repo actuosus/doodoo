@@ -39,7 +39,7 @@
 <template name="interestsList">
     <div class="interest-section" id="my-interests">
         <h2>My interests</h2>
-        <ul>
+        <ul class="scrollable">
             {{#each interests}}
                 <li>{{name}} <span class="badge points">{{points}}</span></li>
             {{/each}}
@@ -50,7 +50,7 @@
 <template name="wannaList">
     <div class="interest-section" id="wanna-interests">
         <h2>Wanna know</h2>
-        <ul>
+        <ul class="scrollable">
             {{#each interests}}
             <li class="interest">
                 {{name}}
@@ -63,9 +63,9 @@
 <template name="matchInterestsList">
     <div class="interest-section" id="match-interests">
         <h2>Match</h2>
-        <ul>
+        <ul class="scrollable">
             {{#each interests}}
-            <li>{{name}}</li>
+                <li>{{name}}</li>
             {{/each}}
         </ul>
     </div>
@@ -74,9 +74,9 @@
 <template name="differenceInterestsList">
     <div class="interest-section" id="diff-interests">
         <h2>Difference</h2>
-        <ul>
+        <ul class="scrollable">
             {{#each interests}}
-            <li>{{name}}</li>
+                <li>{{name}} <button class="btn btn-mini add-to-my-interest">Add</button></li>
             {{/each}}
         </ul>
     </div>

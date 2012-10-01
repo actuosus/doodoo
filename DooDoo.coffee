@@ -23,6 +23,7 @@ Users = new Meteor.Collection 'users'
 Interests = new Meteor.Collection 'interests'
 Questions = new Meteor.Collection 'questions'
 Events = new Meteor.Collection 'events'
+Skills = new Meteor.Collection 'skills'
 
 if Meteor.isClient
   loginStatus = {}
@@ -126,6 +127,9 @@ if Meteor.isClient
 
   getInterests = -> Interests.fb.read (res)-> parseInterest(res)
 
+  learnSkill = (interest)->
+    Meteor.call 'learnSkill', currentUser.id
+
   getFriendInterests = (cb)->
     FB.api 'me/friends?fields=interests', (res)->
       console.log 'Friends interests', res
@@ -159,6 +163,10 @@ if Meteor.isClient
       else
         $(section).hide()
 
+
+  teach = ->
+    Meteor.call 'teach', currentUser.id
+
   main = ->
     console.log 'Main called'
 
@@ -173,6 +181,9 @@ if Meteor.isClient
 
   Template.interestsList.interests = -> Interests.find()
   Template.differenceInterestsList.interests = -> Session.get 'differentInterests'
+  Template.differenceInterestsList.events =
+    'click .add-to-my-interest': (event)->
+      learnSkill(@)
   Template.matchInterestsList.interests = -> Session.get 'matchedInterests'
 
   Template.interestsList.events =
@@ -181,5 +192,43 @@ if Meteor.isClient
     'click .interest': -> postQuestion(this.name)
 
 if Meteor.isServer
+  graph = "https://graph.facebook.com"
+  appSecret = "31aab97e2878f7a4e7c879ea64d63b7e"
+
+  parseToken = (tokenData)->
+    tokenData.match(/access_token=(.*)$/)[1]
+
+  FB =
+    getAccessToken: (cb)->
+      data =
+        params:
+          grant_type: 'client_credentials'
+          client_id: app.id
+          client_secret: appSecret
+      Meteor.http.get "#{graph}/oauth/access_token", data, (err, res)->
+        console.log res
+        cb parseToken(res.content)
+    api: (url, method, data, cb)->
+      thrown new Error('You need to call with url') if not url
+      Meteor.http.call method, url, data, cb
+
   Meteor.startup ()->
-    # code to run on server at startup
+    Meteor.methods
+      learnSkill: (userId)->
+        userId ?= 'me'
+        FB.getAccessToken (token)->
+          data =
+            params:
+              access_token: token
+              skill: "http://samples.ogp.me/227914737337220"
+          Meteor.http.post "#{graph}/#{userId}/#{app.namespace}:learn", data, ()->
+            console.log arguments
+      teach: (userId)->
+        userId ?= 'me'
+        FB.getAccessToken (token)->
+          data =
+            params:
+              access_token: token
+              profile: "http://samples.ogp.me/390580850990722"
+          Meteor.http.post "#{graph}/#{userId}/#{app.namespace}:teach", data, ()->
+            console.log arguments
