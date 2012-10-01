@@ -3,8 +3,10 @@
 </head>
 
 <body>
-  {{> userBox}}
-  {{> hello}}
+    <div class="container-fluid">
+      {{> userBox}}
+      {{> hello}}
+    </div>
 </body>
 
 <template name="userBox">
@@ -18,13 +20,64 @@
 <template name="hello">
   <h1>DooDoo</h1>
 
-  {{> interestsList}}
+    <div class="row-fluid">
+        <ul class="nav nav-pills interest-nav">
+            <li class="active">
+                <a href="#">My interests</a>
+            </li>
+            <li><a href="#">Wanna know</a></li>
+            <li><a href="#">Match</a></li>
+            <li><a href="#">Difference</a></li>
+        </ul>
+        <div class="span3">{{> interestsList}}</div>
+        <div class="span3">{{> wannaList}}</div>
+        <div class="span3">{{> matchInterestsList}}</div>
+        <div class="span3">{{> differenceInterestsList}}</div>
+    </div>
 </template>
 
 <template name="interestsList">
-    <ul>
-        {{#each interests}}
+    <div class="interest-section" id="my-interests">
+        <h2>My interests</h2>
+        <ul>
+            {{#each interests}}
+                <li>{{name}} <span class="badge points">{{points}}</span></li>
+            {{/each}}
+        </ul>
+    </div>
+</template>
+
+<template name="wannaList">
+    <div class="interest-section" id="wanna-interests">
+        <h2>Wanna know</h2>
+        <ul>
+            {{#each interests}}
+            <li class="interest">
+                {{name}}
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</template>
+
+<template name="matchInterestsList">
+    <div class="interest-section" id="match-interests">
+        <h2>Match</h2>
+        <ul>
+            {{#each interests}}
             <li>{{name}}</li>
-        {{/each}}
-    </ul>
+            {{/each}}
+        </ul>
+    </div>
+</template>
+
+<template name="differenceInterestsList">
+    <div class="interest-section" id="diff-interests">
+        <h2>Difference</h2>
+        <ul>
+            {{#each interests}}
+            <li>{{name}}</li>
+            {{/each}}
+        </ul>
+    </div>
 </template>

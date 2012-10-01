@@ -20,6 +20,7 @@ categories = [
 
 Users = new Meteor.Collection 'users'
 Interests = new Meteor.Collection 'interests'
+Questions = new Meteor.Collection 'questions'
 
 if Meteor.isClient
   loginStatus = {}
@@ -39,6 +40,7 @@ if Meteor.isClient
         loginStatus = response
         app.accessToken = loginStatus.authResponse.accessToken
         getInfo()
+        main()
       else
         FB.login (response)->
           if response.authResponse
@@ -46,7 +48,6 @@ if Meteor.isClient
             FB.api '/me', (response)->
               console.log "Good to see you, #{response.name}."
               getInfo()
-
               main()
           else
             console.log 'User cancelled login or did not fully authorize.'
@@ -88,7 +89,7 @@ if Meteor.isClient
     create: (data, cb)->
       FB.api '/me/interests', 'post', data, (res)-> cb res
     read: (cb)->
-      FB.api '/me/interests', data, (res)-> cb res
+      FB.api '/me/interests', (res)-> cb res
     update: (data)->
       FB.api '/me/interests', 'post', data, (res)-> console.log arguments
     delete: (data)->
@@ -103,17 +104,66 @@ if Meteor.isClient
         if item.category?.match regexp
           interests.push item
       if interests.length
-        interests.forEach (item)-> Interests.insert name:item.name
+        interests.forEach (item)->
+          Interests.insert
+            fbUserId: currentUser.id
+            points: 0
+            name:item.name
 
-  getInterests = -> FB.api '/me/interests', (res)-> parseInterest(res)
+  getInterests = -> Interests.fb.read (res)-> parseInterest(res)
+
+  getFriendInterests = (cb)->
+    FB.api 'me/friends?fields=interests', (res)->
+      console.log 'Friends interests', res
+      interests = _.sortBy(_.compact(_.flatten(res.data?.map (friend)-> friend.interests?.data)), 'name')
+      Session.set 'friendInterests', interests
+      cb interests
+
+
+  interestDifference = ->
+    interests = Interests.find().fetch()
+    friendInterests = Session.get 'friendInterests'
+    if friendInterests
+      diff = friendInterests.filter (item)-> yes if item.name not in _.pluck interests, 'name'
+      Session.set 'differentInterests', _.sortBy diff, 'name'
+      diff
+
+  interestMatch = ->
+    interests = Interests.find().fetch()
+    friendInterests = Session.get 'friendInterests'
+    if friendInterests
+      matched = friendInterests.filter (item)-> yes if item.name in _.pluck interests, 'name'
+      Session.set 'matchedInterests', _.sortBy matched, 'name'
+      matched
+
+  resolveTabState = ->
+    currentTab = Session.get 'currentTab'
+    $('.interest-section').each (index, section)->
+      console.log section, currentTab
+      if section.id == currentTab
+        $(section).show()
+      else
+        $(section).hide()
 
   main = ->
+    console.log 'Main called'
+
+    Session.set 'currentTab', 'my-interests'
+
+    resolveTabState()
+
     getInterests()
+    getFriendInterests (interests)->
+      interestDifference()
+      interestMatch()
 
   Template.interestsList.interests = -> Interests.find()
+  Template.differenceInterestsList.interests = -> Session.get 'differentInterests'
+  Template.matchInterestsList.interests = -> Session.get 'matchedInterests'
+
   Template.interestsList.events =
-    'click #get-interests': -> getLikes(); getInterests()
-    'click #delete-interests': -> Interests.remove {}
+#    'click #get-interests': -> getLikes(); getInterests()
+#    'click #delete-interests': -> Interests.remove {}
     'click .interest': -> postQuestion(this.name)
 
 if Meteor.isServer
