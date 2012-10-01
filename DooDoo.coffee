@@ -121,6 +121,9 @@ if Meteor.isClient
   learnSkill = (interest)->
     Meteor.call 'learnSkill', currentUser.id
 
+  unlearnSkill = (interest)->
+    Meteor.call 'unlearnSkill', currentUser.id
+
   getFriendInterests = (cb)->
     FB.api 'me/friends?fields=interests', (res)->
       console.log 'Friends interests', res
@@ -173,12 +176,28 @@ if Meteor.isClient
       interestDifference()
       interestMatch()
 
+  Template.navigation.events =
+    'click a': (event)->
+      event.preventDefault()
+      console.log event
+      id = $(event.target).attr('id').match(/(.*)-section/)[1]
+      $('.interest-section').hide()
+      $('#' + id).show();
+
   Template.interestsList.interests = -> Interests.find()
   Template.differenceInterestsList.interests = -> Session.get 'differentInterests'
   Template.differenceInterestsList.events =
     'click .add-to-my-interest': (event)->
       learnSkill(@)
   Template.matchInterestsList.interests = -> Session.get 'matchedInterests'
+
+  Template.wannaList.interests = -> Skills.find()
+
+  Template.wannaList.events =
+    'submit .wanna-know-form': (event)->
+      event.preventDefault()
+      name = $('.wanna-know-form input[name="name"]').val()
+      Skills.insert name:name
 
   Template.interestsList.events =
 #    'click #get-interests': -> getLikes(); getInterests()
@@ -219,6 +238,15 @@ if Meteor.isServer
               access_token: token
               skill: "http://samples.ogp.me/227914737337220"
           Meteor.http.post "#{graph}/#{userId}/#{app.namespace}:learn", data, ()->
+            console.log arguments
+      unlearnSkill: (userId)->
+        userId ?= 'me'
+        FB.getAccessToken (token)->
+          data =
+            params:
+              access_token: token
+              skill: "http://samples.ogp.me/227914737337220"
+          Meteor.http.delete "#{graph}/#{userId}/#{app.namespace}:learn", data, ()->
             console.log arguments
       teach: (userId)->
         userId ?= 'me'

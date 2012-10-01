@@ -10,7 +10,7 @@
 </body>
 
 <template name="userBox">
-    <div id="user-box">
+    <div class="well" id="user-box">
         <img id="avatar"/>
         <div id="username"></div>
         <button class="btn btn-mini" id="logout">Logout</button>
@@ -21,19 +21,31 @@
   <h1>DooDoo</h1>
 
     <div class="row-fluid">
-        <ul class="nav nav-pills interest-nav">
-            <li class="active">
-                <a href="#">My interests</a>
-            </li>
-            <li><a href="#">Wanna know</a></li>
-            <li><a href="#">Match</a></li>
-            <li><a href="#">Difference</a></li>
-        </ul>
-        <div class="span3">{{> interestsList}}</div>
-        <div class="span3">{{> wannaList}}</div>
-        <div class="span3">{{> matchInterestsList}}</div>
-        <div class="span3">{{> differenceInterestsList}}</div>
+        <div class="span2">
+            {{> navigation }}
+        </div>
+        <div class="span6">
+            {{> interestsList}}
+            {{> wannaList}}
+            {{> matchInterestsList}}
+            {{> differenceInterestsList}}
+        </div>
     </div>
+</template>
+
+<template name="navigation">
+    <ul class="nav nav-list interest-nav">
+        <li class="nav-header">Interests and skills</li>
+        <li class="active">
+            <a href="#" id="my-interests-section">My interests</a>
+        </li>
+        <li><a href="#" id="wanna-interests-section">Wanna know</a></li>
+        <li><a href="#" id="match-interests-section">Match</a></li>
+        <li><a href="#" id="diff-interests-section">Difference</a></li>
+
+        <li class="nav-header">Events</li>
+        <li><a href="#">Wanna know</a></li>
+    </ul>
 </template>
 
 <template name="interestsList">
@@ -50,6 +62,11 @@
 <template name="wannaList">
     <div class="interest-section" id="wanna-interests">
         <h2>Wanna know</h2>
+
+        <form class="wanna-know-form">
+            <input type="text" name="name" placeholder="Skill name"/>
+        </form>
+
         <ul class="scrollable">
             {{#each interests}}
             <li class="interest">

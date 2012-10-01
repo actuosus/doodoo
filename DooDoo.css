@@ -1,5 +1,12 @@
 /* CSS declarations go here */
 
+#user-box {
+    width: 120px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
 .scrollable {
     overflow-x: hidden;
     overflow-y: auto;
