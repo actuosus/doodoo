@@ -54,7 +54,7 @@
         <h2>My interests</h2>
         <ul class="scrollable">
             {{#each interests}}
-                <li>{{name}} <span class="badge points">{{points}}</span></li>
+                <li>{{name}} <span class="badge points" contentEditable="true">{{points}}</span></li>
             {{/each}}
         </ul>
     </div>
@@ -106,9 +106,30 @@
         <h2>Difference</h2>
         <ul class="scrollable">
             {{#each interests}}
-            <li>{{name}}</li>
+            <li>
+                {{name}}
+                <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
+                    Action
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <li><a class="ask-a-question" tabindex="-1" href="#">Ask a question</a></li>
+                    <li><a class="add-to-my-interest" tabindex="-1" href="#">Add skill</a></li>
+                </ul>
+            </li>
             {{/each}}
         </ul>
+    </div>
+    <div id="modalQuestionCreate" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>Ask friends to teach you…</h3>
+        </div>
+        <div class="modal-body">
+            <p>Question added.</p>
+        </div>
+        <div class="modal-footer">
+        </div>
     </div>
 </template>
 

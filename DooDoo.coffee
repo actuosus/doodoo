@@ -1,8 +1,8 @@
 app =
-#  id: '227417657386928'
-#  namespace: 'doodoodev'
-  id: '431649223563866'
-  namespace: 'doodoohack'
+  id: '227417657386928'
+  namespace: 'doodoodev'
+#  id: '431649223563866'
+#  namespace: 'doodoohack'
 
 permissions = [
   'email',
@@ -79,6 +79,11 @@ if Meteor.isClient
     js.src = '//connect.facebook.net/en_US/all.js'
     d.getElementsByTagName('head')[0].appendChild js
   )(document)
+
+  postQuestion = (item)->
+    question = "Wanna teach me #{item}?"
+    FB.api '/me/questions', 'post', question: question, () ->
+      $('#modalQuestionCreate').modal()
 
   Interests.fb =
     create: (data, cb)->
@@ -201,7 +206,21 @@ if Meteor.isClient
   Template.differenceInterestsList.events =
     'click .add-to-my-interest': (event)->
       learnSkill(@)
+    'click .ask-a-question': (event)->
+      postQuestion(@.name)
   Template.matchInterestsList.interests = -> Session.get 'matchedInterests'
+
+  Template.wannaList.interests = -> Skills.find({fbUserId: currentUser.id})
+
+  Template.wannaList.events =
+    'submit .wanna-know-form': (event)->
+      event.preventDefault()
+      name = $('.wanna-know-form input[name="name"]').val()
+      Skills.insert {
+        fbUserId: currentUser.id
+        name: name
+      }
+
   Template.myEventList.items = -> Session.get 'myEvents'
 
 
