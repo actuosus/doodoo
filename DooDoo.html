@@ -65,9 +65,21 @@
         <h2>Match</h2>
         <ul class="scrollable">
             {{#each interests}}
-                <li>{{name}}</li>
+            <li>{{name}} <input type="button" class="btn create-event" value="Create event"/></li>
             {{/each}}
         </ul>
+    </div>
+
+    <div id="modalEventCreate" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>Event create!</h3>
+        </div>
+        <div class="modal-body">
+            <p>One fine body…</p>
+        </div>
+        <div class="modal-footer">
+        </div>
     </div>
 </template>
 

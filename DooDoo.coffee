@@ -79,15 +79,6 @@ if Meteor.isClient
     d.getElementsByTagName('head')[0].appendChild js
   )(document)
 
-  Template.hello.greeting = ->
-    "Welcome to DooDoo."
-
-  Template.hello.events =
-    'click input' : ()->
-      # template data, if any, is available in 'this'
-      if console
-        console.log "You pressed the button"
-
   Interests.fb =
     create: (data, cb)->
       FB.api '/me/interests', 'post', data, (res)-> cb res
@@ -106,7 +97,7 @@ if Meteor.isClient
         start_time: [currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDay()].join('-')
       }, (res)->
         Events.insert { event_id: res.id, profile_id: currentUser.id }
-        cb res
+        cb res if cb
     getAll: ->
       Events.find({profile_id: currentUser.id}).fetch()
 
@@ -163,10 +154,13 @@ if Meteor.isClient
       else
         $(section).hide()
 
-
   teach = ->
     Meteor.call 'teach', currentUser.id
-
+        
+  didEventCreate = (res)->
+    console.log this, res
+    $('#modalEventCreate').modal();
+        
   main = ->
     console.log 'Main called'
 
@@ -190,6 +184,9 @@ if Meteor.isClient
 #    'click #get-interests': -> getLikes(); getInterests()
 #    'click #delete-interests': -> Interests.remove {}
     'click .interest': -> postQuestion(this.name)
+
+  Template.matchInterestsList.events =
+    'click .create-event': -> Events.fb.create(this.name, didEventCreate.bind(this))
 
 if Meteor.isServer
   graph = "https://graph.facebook.com"
