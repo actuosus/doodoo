@@ -29,6 +29,7 @@
             {{> wannaList}}
             {{> matchInterestsList}}
             {{> differenceInterestsList}}
+            {{> myEventList}}
         </div>
     </div>
 </template>
@@ -105,7 +106,18 @@
         <h2>Difference</h2>
         <ul class="scrollable">
             {{#each interests}}
-                <li>{{name}} <button class="btn btn-mini add-to-my-interest">Add</button></li>
+            <li>{{name}}</li>
+            {{/each}}
+        </ul>
+    </div>
+</template>
+
+<template name="myEventList">
+    <div class="" id="event-list">
+        <h2>My events</h2>
+        <ul>
+            {{#each items}}
+            <li><a href="https://www.facebook.com/events/{{id}}/" target="_blank">{{name}}</a></li>
             {{/each}}
         </ul>
     </div>
