@@ -9,7 +9,8 @@ permissions = [
   'user_questions',
   'publish_actions',
   'publish_stream',
-  'friends_interests'
+  'friends_interests',
+  'create_event'
 ]
 
 categories = [
@@ -21,6 +22,7 @@ categories = [
 Users = new Meteor.Collection 'users'
 Interests = new Meteor.Collection 'interests'
 Questions = new Meteor.Collection 'questions'
+Events = new Meteor.Collection 'events'
 
 if Meteor.isClient
   loginStatus = {}
@@ -94,6 +96,18 @@ if Meteor.isClient
       FB.api '/me/interests', 'post', data, (res)-> console.log arguments
     delete: (data)->
       FB.api '/me/interests', 'delete', data, (res)-> console.log arguments
+
+  Events.fb =
+    create: (title, cb)->
+      currentDate = new Date
+      FB.api '/me/events', 'post', {
+        name: 'Lesson "' + title + '" to start'
+        start_time: [currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDay()].join('-')
+      }, (res)->
+        Events.insert { event_id: res.id, profile_id: currentUser.id }
+        cb res
+    getAll: ->
+      Events.find({profile_id: currentUser.id}).fetch()
 
   parseInterest = (res)->
     if res?.data?.length
