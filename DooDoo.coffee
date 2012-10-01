@@ -1,6 +1,8 @@
 app =
-  id: '227417657386928'
-  namespace: 'doodoodev'
+#  id: '227417657386928'
+#  namespace: 'doodoodev'
+  id: '431649223563866'
+  namespace: 'doodoohack'
 
 permissions = [
   'email',
