@@ -35,7 +35,7 @@
 </template>
 
 <template name="navigation">
-    <ul class="nav nav-list interest-nav">
+    <ul class="nav nav-list navigation">
         <li class="nav-header">Interests and skills</li>
         <li class="active">
             <a href="#" id="my-interests-section">My interests</a>
@@ -45,7 +45,7 @@
         <li><a href="#" id="diff-interests-section">Difference</a></li>
 
         <li class="nav-header">Events</li>
-        <li><a href="#">Wanna know</a></li>
+        <li><a href="#" id="my-events-section">My events</a></li>
     </ul>
 </template>
 
@@ -113,7 +113,7 @@
 </template>
 
 <template name="myEventList">
-    <div class="" id="event-list">
+    <div class="interest-section" id="my-events">
         <h2>My events</h2>
         <ul>
             {{#each items}}

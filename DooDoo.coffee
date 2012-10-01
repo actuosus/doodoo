@@ -153,12 +153,12 @@ if Meteor.isClient
 
   resolveTabState = ->
     currentTab = Session.get 'currentTab'
+
+    id = $('.navigation .active a').attr('id').match(/(.*)-section/)[1]
+
     $('.interest-section').each (index, section)->
-      console.log section, currentTab
-      if section.id == currentTab
-        $(section).show()
-      else
-        $(section).hide()
+      $(section).hide()
+      $('#'+id).show()
 
   teach = ->
     Meteor.call 'teach', currentUser.id
@@ -182,6 +182,17 @@ if Meteor.isClient
 
     Events.fb.getAll (res)->
       Session.set 'myEvents', _.toArray res
+
+
+  Template.navigation.events =
+    'click a': (event)->
+      event.preventDefault()
+      $('.navigation .active').removeClass('active')
+      id = $(event.target).attr('id').match(/(.*)-section/)[1]
+      console.log id
+      $(event.target).parent('li').addClass('active')
+      $('.interest-section').hide()
+      $('#'+id).show()
 
   Template.interestsList.interests = -> Interests.find()
   Template.differenceInterestsList.interests = -> Session.get 'differentInterests'
